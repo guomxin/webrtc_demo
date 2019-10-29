@@ -11,7 +11,7 @@ const offerOptions = {
 };
 
 // Define connection to signal server
-let socket = io.connect('https://10.30.21.53');
+let socket = io.connect('https://192.168.0.27');
 const room = 1;
 
 socket.on("joined", (room) => {
@@ -63,9 +63,15 @@ function startAction() {
 
 	socket.emit("join", room);
 
-	const servers = null;  // Allows for RTC server configuration.
+	var configuration = {
+		iceServers: [
+			{
+				urls: "stun:stun.xten.com"
+			}
+		]
+	};
 	// Create peer connections and add behavior.
-	peerConnection = new RTCPeerConnection(servers);
+	peerConnection = new RTCPeerConnection(configuration);
 	trace('Created peer connection object.');
 	peerConnection.addEventListener('icecandidate', handleConnection);
 	peerConnection.addEventListener('addstream', gotRemoteMediaStream);
@@ -136,9 +142,15 @@ function callAction() {
 	trace('Starting call.');
 
 	if (peerConnection == null) {
-		const servers = null;  // Allows for RTC server configuration.
+		var configuration = {
+			iceServers: [
+				{
+					urls: "stun:stun.xten.com"
+				}
+			]
+		};
 		// Create peer connections and add behavior.
-		peerConnection = new RTCPeerConnection(servers);
+		peerConnection = new RTCPeerConnection(configuration);
 		trace('Created peer connection object.');
 		peerConnection.addEventListener('icecandidate', handleConnection);
 		peerConnection.addEventListener('addstream', gotRemoteMediaStream);
@@ -167,13 +179,13 @@ function callAction() {
 function handleConnection(event) {
 	const iceCandidate = event.candidate;
 	if (iceCandidate) {
-		trace(`[send-ice] ${iceCandidate}`);
+		trace(`[send-ice] ${iceCandidate.candidate}`);
 		socket.emit('send-ice', room, iceCandidate);
 	}
 }
 
 socket.on('recv-ice', (iceCandidate) => {
-	trace(`[recv-ice] ${iceCandidate}`);
+	trace(`[recv-ice] ${iceCandidate.candidate}`);
 	peerConnection.addIceCandidate(iceCandidate)
 		.then(handleConnectionSuccess)
 		.catch(handleConnectionFailure);
