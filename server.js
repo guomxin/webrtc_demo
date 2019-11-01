@@ -46,7 +46,7 @@ var options = {
 	cert: fs.readFileSync('./public/cert/xingm.pc.crt')
 }
 var https_server = https.createServer(options, app);
-https_server.listen(443, '0.0.0.0');
+https_server.listen(8443, '0.0.0.0');
 var io = socketIo.listen(https_server);
 
 io.sockets.on('connection', (socket)=> {

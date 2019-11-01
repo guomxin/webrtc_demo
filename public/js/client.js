@@ -11,7 +11,7 @@ const offerOptions = {
 };
 
 // Define connection to signal server
-let socket = io.connect('https://192.168.0.27');
+let socket = io.connect('https://guomxin.imwork.net:16443');
 const room = 1;
 
 socket.on("joined", (room) => {
@@ -67,7 +67,12 @@ function startAction() {
 		iceServers: [
 			{
 				urls: "stun:stun.xten.com"
-			}
+			},
+            {
+                urls: 'turn:guomxin.imwork.net:3478',
+                username: 'test',
+                credential: 'test'
+            }           
 		]
 	};
 	// Create peer connections and add behavior.
@@ -146,7 +151,12 @@ function callAction() {
 			iceServers: [
 				{
 					urls: "stun:stun.xten.com"
-				}
+				},
+                {
+                    urls: 'turn:guomxin.imwork.net:3478',
+                    username: 'test',
+                    credential: 'test'
+                }           
 			]
 		};
 		// Create peer connections and add behavior.
